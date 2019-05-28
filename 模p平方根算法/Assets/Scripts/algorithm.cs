@@ -2,14 +2,22 @@
 using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class algorithm : MonoBehaviour
 {
+    public Button button;
+    public Text textA;
+    public Text textP;
+    public Text textMidOutPut;
+    public Text textResult;
+    public GameObject answers;
     // Start is called before the first frame update
     void Start()
     {
         ModPAlgorithm(315,907);
     }
+
 
     BigInteger ModPAlgorithm(int a,int p)
     {
@@ -35,6 +43,7 @@ public class algorithm : MonoBehaviour
          */
         BigInteger[] X = new BigInteger[t];
         X[t - 1] = BigInteger.ModPow((BigInteger)a, (BigInteger)((s + 1) / 2), (BigInteger)p);
+        textMidOutPut.text = "X" + (t-1) + " = " + X[t - 1].ToString() + " (mod " + p + ")";
 
         /*Step3: 如果t=1,则X[t-1] = X[0]是同余式的解 
          * input: X[t-1]
@@ -43,6 +52,7 @@ public class algorithm : MonoBehaviour
         if (t == 1)
         {
             Debug.Log(X[t - 1]);
+            textResult.text = "x = " + X[0] + " (mod " + p + ")";
             return X[t - 1];
         }
 
@@ -101,13 +111,15 @@ public class algorithm : MonoBehaviour
                 X[t - index - 2] = BigInteger.ModPow(X[t - index - 2] = X[t - index - 1] * BigInteger.Pow(b, (int)BigInteger.Pow(2, index)), 1, p);
             }
             index = index + 1;
+            textMidOutPut.text = textMidOutPut.text + "\n" + "X" + (t - 1 - index) + " = " + X[t - 1 - index].ToString() + " (mod " + p + ")";
             if (t- index - 1 == 0)
             {
+                textResult.text = "x = " + X[0] + " (mod " + p + ")";
                 Debug.Log(X[0]);
                 break;
             }
         }
-        return 1;
+        return X[0];
     }
 
     //判断是否为奇数
@@ -171,5 +183,23 @@ public class algorithm : MonoBehaviour
             }
         }
         return 0;
+    }
+
+   public void StartCalculate()
+   {
+        answers.SetActive(true);
+        if(textA.text == "" && textP.text =="")
+        {
+            Debug.Log("输入a或p为空！");
+            textResult.text = "输入a或p为空！";
+        }
+        int a = System.Convert.ToInt32(textA.text);
+        int p = System.Convert.ToInt32(textP.text);
+        ModPAlgorithm(a, p);
+    }
+
+    public void Exit()
+    {
+        Application.Quit();
     }
 }
